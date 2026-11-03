@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EARN FIRST CASH</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#eef4ff;color:#14264a}
+header{background:#0754c7;color:white;padding:22px 16px;text-align:center}
+header h1{margin:0;font-size:25px}
+header p{margin:7px 0 0;font-size:13px}
+main{padding:16px;padding-bottom:85px;max-width:600px;margin:auto}
+.card{background:white;padding:17px;border-radius:15px;margin:13px 0;box-shadow:0 3px 12px #163c7212}
+h2{font-size:20px}
+h3{margin:5px 0}
+input{width:100%;padding:13px;margin:7px 0;border:1px solid #ccd7e8;border-radius:9px;font-size:15px}
+button{border:0;background:#0754c7;color:white;padding:12px 16px;border-radius:9px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.primary{width:100%;margin-top:8px}
+.reward{color:#087c45;font-weight:bold}
+.small{font-size:12px;color:#64748b}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:10px 2px;box-shadow:0 -3px 12px #163c7215}
+nav button{background:transparent;color:#0754c7;padding:8px 5px;font-size:12px}
+nav button.active{background:#e4efff}
+.page{display:none}
+.page.active{display:block}
+.notice{background:#fff7df;border:1px solid #f0d58a;padding:12px;border-radius:10px;font-size:12px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+<h1>EARN FIRST CASH</h1>
+<p>Complete activities. Collect demo points.</p>
+</header>
+
+<main>
+<section id="auth" class="page active">
+<div class="card">
+<h2>Welcome!</h2>
+<p>Create an account for this website demo.</p>
+<input id="name" placeholder="Your name">
+<input id="email" type="email" placeholder="Email address">
+<input id="password" type="password" placeholder="Create a demo password">
+<button class="primary" onclick="register()">Register</button>
+<p class="small">Already registered on this device?</p>
+<button class="primary" onclick="login()">Login</button>
+<p id="authMessage" class="small"></p>
+</div>
+<div class="notice">Demo only: do not enter a real password or sensitive personal information. This prototype stores sample information in this browser only.</div>
+</section>
+
+<section id="home" class="page">
+<div class="card">
+<h2>Welcome, <span id="userName">User</span>!</h2>
+<p>Your demo balance</p>
+<h1 class="reward"><span id="balance">0</span> points</h1>
+<p class="small">These are sample points, not withdrawable money.</p>
+</div>
+<div class="card">
+<h3>Available activities</h3>
+<p>Watch an ad — <span class="reward">5,000 points</span></p>
+<p>Refer a friend — <span class="reward">10,000 points</span></p>
+<p>Complete a quiz — <span class="reward">2,000 points</span></p>
+<p>Daily challenge — <span class="reward">5,000 points</span></p>
+<p>Daily login — <span class="reward">1,000 points</span></p>
+<button onclick="dailyLogin()">Collect demo daily login points</button>
+</div>
+<div class="notice">No real advertisements are running. Never click advertisements just to earn rewards. Real ad rewards require an approved ad provider and its rules.</div>
+</section>
+
+<section id="earn" class="page">
+<div class="card">
+<h2>Earn Points</h2>
+<h3>Daily quiz</h3>
+<p>What is the capital city of Nigeria?</p>
+<button onclick="answerQuiz('Lagos')">Lagos</button>
+<button onclick="answerQuiz('Abuja')">Abuja</button>
+<button onclick="answerQuiz('Kano')">Kano</button>
+<p id="quizMessage" class="small"></p>
+<p class="reward">Quiz reward: 2,000 demo points</p>
+</div>
+<div class="card">
+<h3>Daily challenge</h3>
+<p>Visit the website and explore all four sections.</p>
+<button onclick="challenge()">Complete demo challenge</button>
+<p id="challengeMessage" class="small"></p>
+<p class="reward">Challenge reward: 5,000 demo points</p>
+</div>
+<div class="card">
+<h3>Advertisement task</h3>
+<p>This is a placeholder. No advertisement is connected yet.</p>
+<p class="reward">Displayed demo reward: 5,000 points</p>
+<button disabled>Advertisement coming later</button>
+</div>
+</section>
+
+<section id="wallet" class="page">
+<div class="card">
+<h2>My Wallet</h2>
+<p>Demo points balance</p>
+<h1 class="reward"><span id="walletBalance">0</span> points</h1>
+<p class="small">No real cash balance or withdrawal facility is available.</p>
+</div>
+<div class="card">
+<h3>Refer a friend</h3>
+<p>Demo referral reward: <span class="reward">10,000 points</span></p>
+<p class="small">Referral tracking is not connected yet.</p>
+<button onclick="copyReferral()">Copy demo referral code</button>
+<p id="refMessage" class="small"></p>
+</div>
+<div class="card">
+<h3>Activity history</h3>
+<div id="history" class="small">No activities yet.</div>
+</div>
+</section>
+</main>
+
+<nav id="navigation" style="display:none">
+<button class="active" onclick="showPage('home',this)">Home</button>
+<button onclick="showPage('earn',this)">Earn</button>
+<button onclick="showPage('wallet',this)">Wallet</button>
+<button onclick="logout()">Logout</button>
+</nav>
+
+<script>
+let points=0;
+let quizDone=false;
+let challengeDone=false;
+let loginDone=false;
+let historyItems=[];
+
+function register(){
+ const name=document.getElementById('name').value.trim();
+ const email=document.getElementById('email').value.trim();
+ const password=document.getElementById('password').value;
+ if(!name||!email||!password){
+  document.getElementById('authMessage').textContent='Please fill in all fields.';
+  return;
+ }
+ localStorage.setItem('demoName',name);
+ localStorage.setItem('demoEmail',email);
+ localStorage.setItem('demoPassword',password);
+ startApp();
+}
+function login(){
+ const email=document.getElementById('email').value.trim();
+ const password=document.getElementById('password').value;
+ if(email===localStorage.getItem('demoEmail')&&password===localStorage.getItem('demoPassword')){
+  startApp();
+ }else{
+  document.getElementById('authMessage').textContent='Demo login details do not match.';
+ }
+}
+function startApp(){
+ document.getElementById('userName').textContent=localStorage.getItem('demoName');
+ document.getElementById('auth').classList.remove('active');
+ document.getElementById('home').classList.add('active');
+ document.getElementById('navigation').style.display='flex';
+ updateBalance();
+}
+function showPage(id,button){
+ document.querySelectorAll('main .page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+ button.classList.add('active');
+}
+function addPoints(amount,label){
+ points+=amount;
+ historyItems.unshift(label+' +'+amount.toLocaleString()+' points');
+ updateBalance();
+ document.getElementById('history').innerHTML=historyItems.join('<br>');
+}
+function updateBalance(){
+ document.getElementById('balance').textContent=points.toLocaleString();
+ document.getElementById('walletBalance').textContent=points.toLocaleString();
+}
+function dailyLogin(){
+ if(loginDone)return;
+ loginDone=true;
+ addPoints(1000,'Daily login');
+ alert('1,000 demo points added!');
+}
+function answerQuiz(answer){
+ if(quizDone)return;
+ if(answer==='Abuja'){
+  quizDone=true;
+  addPoints(2000,'Quiz completed');
+  document.getElementById('quizMessage').textContent='Correct! 2,000 demo points added.';
+ }else{
+  document.getElementById('quizMessage').textContent='Try again!';
+ }
+}
+function challenge(){
+ if(challengeDone)return;
+ challengeDone=true;
+ addPoints(5000,'Daily challenge');
+ document.getElementById('challengeMessage').textContent='Challenge completed! 5,000 demo points added.';
+}
+function copyReferral(){
+ const code='EFC-DEMO-001';
+ if(navigator.clipboard){
+  navigator.clipboard.writeText(code).then(()=>document.getElementById('refMessage').textContent='Demo code copied: '+code);
+ }else{
+  document.getElementById('refMessage').textContent='Your demo referral code is '+code;
+ }
+}
+function logout(){
+ document.querySelectorAll('main .page').forEach(p=>p.classList.remove('active'));
+ document.getElementById('auth').classList.add('active');
+ document.getElementById('navigation').style.display='none';
+}
+</script>
+</body>
+  </html>
+  
