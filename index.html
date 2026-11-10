@@ -104,10 +104,18 @@ nav button.active{background:#e4efff}
 </div>
 <div class="card">
 <h3>Refer a friend</h3>
-<p>Demo referral reward: <span class="reward">10,000 points</span></p>
-<p class="small">Referral tracking is not connected yet.</p>
-<button onclick="copyReferral()">Copy demo referral code</button>
+<p>Invite your friends to join EARN FIRST CASH.</p>
+
+<p class="reward">Referral reward: 10,000 demo points</p>
+
+<p>Your referral code:</p>
+<h2 id="refCode">EFC-DEMO-001</h2>
+
+<button onclick="copyReferral()">Copy referral code</button>
+<button onclick="shareReferral()">Share with a friend</button>
+
 <p id="refMessage" class="small"></p>
+</div>
 </div>
 <div class="card">
 <h3>Activity history</h3>
@@ -199,12 +207,28 @@ function challenge(){
 }
 function copyReferral(){
  const code='EFC-DEMO-001';
+
  if(navigator.clipboard){
-  navigator.clipboard.writeText(code).then(()=>document.getElementById('refMessage').textContent='Demo code copied: '+code);
+  navigator.clipboard.writeText(code).then(()=>{
+   document.getElementById('refMessage').textContent='Demo code copied: '+code;
+  });
  }else{
   document.getElementById('refMessage').textContent='Your demo referral code is '+code;
  }
 }
+
+function shareReferral(){
+ const message='Join EARN FIRST CASH with my referral code: EFC-DEMO-001';
+
+ if(navigator.share){
+  navigator.share({
+   title:'EARN FIRST CASH',
+   text:message
+  });
+ }else{
+  document.getElementById('refMessage').textContent=message;
+ }
+  }
 function logout(){
  document.querySelectorAll('main .page').forEach(p=>p.classList.remove('active'));
  document.getElementById('auth').classList.add('active');
