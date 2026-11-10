@@ -218,7 +218,8 @@ function copyReferral(){
 }
 
 function shareReferral(){
- const message='Join EARN FIRST CASH with my referral code: EFC-DEMO-001';
+ const link='https://olamilekan01-collabo.github.io/earn-first-cash/';
+ const message='Join EARN FIRST CASH and use my referral code: EFC-DEMO-001\n\n'+link;
 
  if(navigator.share){
   navigator.share({
@@ -228,7 +229,7 @@ function shareReferral(){
  }else{
   document.getElementById('refMessage').textContent=message;
  }
-  }
+}
 function logout(){
  document.querySelectorAll('main .page').forEach(p=>p.classList.remove('active'));
  document.getElementById('auth').classList.add('active');
